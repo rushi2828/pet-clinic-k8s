@@ -8,7 +8,7 @@ Deploying Spring based Petclinic project on kubernates cluster using minikube
 * Install minikube: <https://minikube.sigs.k8s.io/docs/start> 
 * Install docker: <https://docs.docker.com/engine/install/> 
 * Sign up on docker hub: <https://hub.docker.com/>
-* Clone project to local: <https://github.com/spring-projects/spring-petclinic>
+* Clone the project to local: <https://github.com/spring-projects/spring-petclinic>
 ## Steps for  execution
 * Write Dockerfile:
 
