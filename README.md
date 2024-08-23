@@ -114,7 +114,7 @@ minikube dashboard
 
 * Scaling up to 4 replicas
 ```
-kubectl scale deployment pet-clinic-deployment –replicas=4 
+kubectl scale deployment pet-clinic-deployment –-replicas=4 
 ```
 ![image](https://github.com/user-attachments/assets/969358c8-159c-4cbd-b3f8-a59252ae8743)
 
