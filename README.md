@@ -112,7 +112,7 @@ minikube dashboard
 
 ![image](https://github.com/user-attachments/assets/afdc7c19-86f4-4670-823f-86f4c7b3f239)
 
-* Scale up for 4 replicas
+* Scaling up to 4 replicas
 ```
 kubectl scale deployment pet-clinic-deployment –replicas=4 
 ```
@@ -131,7 +131,7 @@ kubectl get pods
 
 ![image](https://github.com/user-attachments/assets/61b9ca35-2aab-412b-b2fd-419b00386b42)
 
-* Scale back ot down to 1 replica 
+* Scaling back or down to 1 replica 
 ```
 kubectl scale deployment pet-clinic-deployment -–replicas=1
 ```
