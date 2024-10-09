@@ -1,162 +1,138 @@
-# Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)
+# 'Petclinic' on Kubernetes.
+Deploying Spring based Petclinic project on kubernates cluster using minikube
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
+## Getting Started
 
-## Understanding the Spring Petclinic application with a few diagrams
+### Pre-requisites
+* Install kubectl: <https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/>
+* Install minikube: <https://minikube.sigs.k8s.io/docs/start> 
+* Install docker: <https://docs.docker.com/engine/install/> 
+* Sign up on docker hub: <https://hub.docker.com/>
+* Clone the project to local: <https://github.com/spring-projects/spring-petclinic>
+## Steps for  execution
+* Write Dockerfile:
 
-[See the presentation here](https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application)
+![image](https://github.com/user-attachments/assets/4c6a3ae5-7e11-492f-9b9b-0cf6a54aeba0)
 
-## Run Petclinic locally
-
-Spring Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/). You can build a jar file and run it from the command line (it should work just as well with Java 17 or newer):
-
-```bash
-git clone https://github.com/spring-projects/spring-petclinic.git
-cd spring-petclinic
-./mvnw package
-java -jar target/*.jar
+* Create docker image:
 ```
-
-You can then access the Petclinic at <http://localhost:8080/>.
-
-<img width="1042" alt="petclinic-screenshot" src="https://cloud.githubusercontent.com/assets/838318/19727082/2aee6d6c-9b8e-11e6-81fe-e889a5ddfded.png">
-
-Or you can run it from Maven directly using the Spring Boot Maven plugin. If you do this, it will pick up changes that you make in the project immediately (changes to Java source files require a compile as well - most people use an IDE for this):
-
-```bash
-./mvnw spring-boot:run
+docker build -t pet-clinic-demo
 ```
-
-> NOTE: If you prefer to use Gradle, you can build the app using `./gradlew build` and look for the jar file in `build/libs`.
-
-## Building a Container
-
-There is no `Dockerfile` in this project. You can build a container image (if you have a docker daemon) using the Spring Boot build plugin:
-
-```bash
-./mvnw spring-boot:build-image
+* Verify in docker images list:
 ```
-
-## In case you find a bug/suggested improvement for Spring Petclinic
-
-Our issue tracker is available [here](https://github.com/spring-projects/spring-petclinic/issues).
-
-## Database configuration
-
-In its default configuration, Petclinic uses an in-memory database (H2) which
-gets populated at startup with data. The h2 console is exposed at `http://localhost:8080/h2-console`,
-and it is possible to inspect the content of the database using the `jdbc:h2:mem:<uuid>` URL. The UUID is printed at startup to the console.
-
-A similar setup is provided for MySQL and PostgreSQL if a persistent database configuration is needed. Note that whenever the database type changes, the app needs to run with a different profile: `spring.profiles.active=mysql` for MySQL or `spring.profiles.active=postgres` for PostgreSQL. See the [Spring Boot documentation](https://docs.spring.io/spring-boot/how-to/properties-and-configuration.html#howto.properties-and-configuration.set-active-spring-profiles) for more detail on how to set the active profile.
-
-You can start MySQL or PostgreSQL locally with whatever installer works for your OS or use docker:
-
-```bash
-docker run -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic -p 3306:3306 mysql:9.0
+docker images
 ```
+![image](https://github.com/user-attachments/assets/18b87c2b-7dfc-456e-967d-58674976b39c)
 
-or
+* Docker desktop:
 
-```bash
-docker run -e POSTGRES_USER=petclinic -e POSTGRES_PASSWORD=petclinic -e POSTGRES_DB=petclinic -p 5432:5432 postgres:17.0
+![image](https://github.com/user-attachments/assets/e17c90c3-9063-45e6-9517-e7b3113bcaa1)
+
+* Run docker image locally:
 ```
-
-Further documentation is provided for [MySQL](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources/db/mysql/petclinic_db_setup_mysql.txt)
-and [PostgreSQL](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources/db/postgres/petclinic_db_setup_postgres.txt).
-
-Instead of vanilla `docker` you can also use the provided `docker-compose.yml` file to start the database containers. Each one has a profile just like the Spring profile:
-
-```bash
-docker-compose --profile mysql up
+docker run -p 8080:8080 pet-clinic-demo
 ```
+![image](https://github.com/user-attachments/assets/3f9c9628-5b62-4fad-9b3d-d7df1f7f33c8)
 
-or
+* Push local docker image to docker hub:
 
-```bash
-docker-compose --profile postgres up
+* 1: Add tag
 ```
+docker tag pet-clinic-demo rushi2323/pet-clinic-demo:01
+```
+![image](https://github.com/user-attachments/assets/947823a4-c877-4166-9b14-3f665b2cab87)
 
-## Test Applications
+* 2: Push to docker hub
+```
+docker push rushi2323/pet-clinic-demo:01
+```
+![image](https://github.com/user-attachments/assets/63a779ae-07ac-46be-b0b1-fd989554bf69)
 
-At development time we recommend you use the test applications set up as `main()` methods in `PetClinicIntegrationTests` (using the default H2 database and also adding Spring Boot Devtools), `MySqlTestApplication` and `PostgresIntegrationTests`. These are set up so that you can run the apps in your IDE to get fast feedback and also run the same classes as integration tests against the respective database. The MySql integration tests use Testcontainers to start the database in a Docker container, and the Postgres tests use Docker Compose to do the same thing.
+* Start minikube :
+```
+minikube start
+```
+![image](https://github.com/user-attachments/assets/32cf703f-9224-423a-937f-4fc07f7507d5)
 
-## Compiling the CSS
+* Minikube should be on running state
+```
+minikube status
+```
+![image](https://github.com/user-attachments/assets/5d070ff0-d572-4a70-9b3e-ee5b97f145bc)
 
-There is a `petclinic.css` in `src/main/resources/static/resources/css`. It was generated from the `petclinic.scss` source, combined with the [Bootstrap](https://getbootstrap.com/) library. If you make changes to the `scss`, or upgrade Bootstrap, you will need to re-compile the CSS resources using the Maven profile "css", i.e. `./mvnw package -P css`. There is no build profile for Gradle to compile the CSS.
+* Create deployment on Kubernetes 
+```
+kubectl create deployment pet-clinic-deployment  –-image= rushi2323/pet-clinic-demo
+```
+![image](https://github.com/user-attachments/assets/1acf2b27-8afd-40b3-b2c1-45afe0754ec2)
 
-## Working with Petclinic in your IDE
+* Verify deployments
+```
+kubectl get deployments 
+```
+![image](https://github.com/user-attachments/assets/c84d7d77-d4a6-443e-b9df-e3078d1ca53d)
 
-### Prerequisites
+* Verify created pods
+```
+kubectl get pods 
+```
+![image](https://github.com/user-attachments/assets/b8d86406-8bcd-44f8-ab25-ee7253aa10fd)
 
-The following items should be installed in your system:
+* Verify pods using k9s dashboard
 
-- Java 17 or newer (full JDK, not a JRE)
-- [Git command line tool](https://help.github.com/articles/set-up-git)
-- Your preferred IDE
-  - Eclipse with the m2e plugin. Note: when m2e is available, there is an m2 icon in `Help -> About` dialog. If m2e is
-  not there, follow the install process [here](https://www.eclipse.org/m2e/)
-  - [Spring Tools Suite](https://spring.io/tools) (STS)
-  - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
-  - [VS Code](https://code.visualstudio.com)
+![image](https://github.com/user-attachments/assets/b0f585da-95a2-4af7-b489-d0d2aeb3a934)
 
-### Steps
+* Port binding
+```
+kubectl expose deployment  pet-clinic-deployment --port=8080 --type=LoadBalancer
+```
+![image](https://github.com/user-attachments/assets/e48aa4cf-4f21-428f-b0e7-8dc53ba9a825)
 
-1. On the command line run:
+* Verify kubectl services
+```
+kubectl get services
+```
+![image](https://github.com/user-attachments/assets/e17c1eab-ab85-4455-91dc-89c031590bcd)
 
-    ```bash
-    git clone https://github.com/spring-projects/spring-petclinic.git
-    ```
+* Service expose on minikube
+```
+minikube service pet-clinic-deployment
+```
+![image](https://github.com/user-attachments/assets/eee87f05-7c30-4f82-9228-57113bad7f68)
 
-1. Inside Eclipse or STS:
+* Verify url is up and running 
 
-    Open the project via `File -> Import -> Maven -> Existing Maven project`, then select the root directory of the cloned repo.
+![image](https://github.com/user-attachments/assets/56a1f32f-5ec3-4ed7-a5b2-f8544692ff1a)
 
-    Then either build on the command line `./mvnw generate-resources` or use the Eclipse launcher (right-click on project and `Run As -> Maven install`) to generate the CSS. Run the application's main method by right-clicking on it and choosing `Run As -> Java Application`.
+* Verify pods on minikube dashboard
+```
+minikube dashboard
+```
+![image](https://github.com/user-attachments/assets/e33215de-175e-4864-981d-ec010cd563bb)
 
-1. Inside IntelliJ IDEA:
+![image](https://github.com/user-attachments/assets/afdc7c19-86f4-4670-823f-86f4c7b3f239)
 
-    In the main menu, choose `File -> Open` and select the Petclinic [pom.xml](pom.xml). Click on the `Open` button.
+* Scaling up to 4 replicas
+```
+kubectl scale deployment pet-clinic-deployment –-replicas=4 
+```
+![image](https://github.com/user-attachments/assets/969358c8-159c-4cbd-b3f8-a59252ae8743)
 
-    - CSS files are generated from the Maven build. You can build them on the command line `./mvnw generate-resources` or right-click on the `spring-petclinic` project then `Maven -> Generates sources and Update Folders`.
+```
+kubectl get pods
+```
+![image](https://github.com/user-attachments/assets/4f48d5ad-ac0d-41bd-83a6-477a47eab56b)
 
-    - A run configuration named `PetClinicApplication` should have been created for you if you're using a recent Ultimate version. Otherwise, run the application by right-clicking on the `PetClinicApplication` main class and choosing `Run 'PetClinicApplication'`.
+* Minikube dashboard
 
-1. Navigate to the Petclinic
+![image](https://github.com/user-attachments/assets/b9225dbf-fa13-4b74-9b24-d4eee911ac03)
 
-    Visit [http://localhost:8080](http://localhost:8080) in your browser.
+* With K9s
 
-## Looking for something in particular?
+![image](https://github.com/user-attachments/assets/61b9ca35-2aab-412b-b2fd-419b00386b42)
 
-|Spring Boot Configuration | Class or Java property files  |
-|--------------------------|---|
-|The Main Class | [PetClinicApplication](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java) |
-|Properties Files | [application.properties](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources) |
-|Caching | [CacheConfiguration](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/java/org/springframework/samples/petclinic/system/CacheConfiguration.java) |
-
-## Interesting Spring Petclinic branches and forks
-
-The Spring Petclinic "main" branch in the [spring-projects](https://github.com/spring-projects/spring-petclinic)
-GitHub org is the "canonical" implementation based on Spring Boot and Thymeleaf. There are
-[quite a few forks](https://spring-petclinic.github.io/docs/forks.html) in the GitHub org
-[spring-petclinic](https://github.com/spring-petclinic). If you are interested in using a different technology stack to implement the Pet Clinic, please join the community there.
-
-## Interaction with other open-source projects
-
-One of the best parts about working on the Spring Petclinic application is that we have the opportunity to work in direct contact with many Open Source projects. We found bugs/suggested improvements on various topics such as Spring, Spring Data, Bean Validation and even Eclipse! In many cases, they've been fixed/implemented in just a few days.
-Here is a list of them:
-
-| Name | Issue |
-|------|-------|
-| Spring JDBC: simplify usage of NamedParameterJdbcTemplate | [SPR-10256](https://jira.springsource.org/browse/SPR-10256) and [SPR-10257](https://jira.springsource.org/browse/SPR-10257) |
-| Bean Validation / Hibernate Validator: simplify Maven dependencies and backward compatibility |[HV-790](https://hibernate.atlassian.net/browse/HV-790) and [HV-792](https://hibernate.atlassian.net/browse/HV-792) |
-| Spring Data: provide more flexibility when working with JPQL queries | [DATAJPA-292](https://jira.springsource.org/browse/DATAJPA-292) |
-
-## Contributing
-
-The [issue tracker](https://github.com/spring-projects/spring-petclinic/issues) is the preferred channel for bug reports, feature requests and submitting pull requests.
-
-For pull requests, editor preferences are available in the [editor config](.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org>. If you have not previously done so, please fill out and submit the [Contributor License Agreement](https://cla.pivotal.io/sign/spring).
-
-## License
-
-The Spring PetClinic sample application is released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+* Scaling back or down to 1 replica 
+```
+kubectl scale deployment pet-clinic-deployment -–replicas=1
+```
+![image](https://github.com/user-attachments/assets/1cec55e9-3763-474a-bc8d-710ca09419bb)

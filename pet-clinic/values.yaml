@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: rushi2323/go-web-app
+  repository: rushi2323/pet-clinic-demo
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1"
+  tag: "01"
 
 imagePullSecrets: []
 nameOverride: ""
